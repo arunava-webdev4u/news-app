@@ -1,7 +1,15 @@
+// https://www.npmjs.com/package/inshorts-news-api
+
 const express = require('express');
 const app = express();
 const { log } = console;
 const inshorts = require('inshorts-news-api');
+const path = require('path');
+
+//* MIDDLEWARE
+// app.use(morgan('dev'));
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 var options = {
     lang: 'en',
@@ -22,12 +30,11 @@ var options = {
 
 app.get('/', async (req, res) => {
     const obj = {};
-    inshorts.getNews(options, await function(result, news_offset){
-        obj.result = result;
+    await inshorts.getNews(options, function(result, news_offset){
+        obj.results = result;
         obj.offset = news_offset;
-        res.send(obj);
     });
-    
+    res.render('index', { results } = obj);
 });
 
 
